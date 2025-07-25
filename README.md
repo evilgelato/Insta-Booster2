@@ -15,7 +15,7 @@ Insta-Booster is a tool designed to help you increase the number of views on you
 ---
 
 ## 🖥️ Requirements
-- Python 3.8+
+- Python 3.12+
 - Packages: `colorama`, `requests`
 
 Install dependencies:
