@@ -13,6 +13,21 @@ CONFIG_FILE = "config.json"
 
 VIDEO_URL = "https://instagram.com/reel/xxxx"
 AMOUNT_OF_BOOSTS = 100
+TYPE = "views"
+
+
+quantity_types = {
+    'views' : 500,
+    'likes' : 20
+}
+delay_types = {
+    'views' : 5,
+    'likes':3
+}
+service_id = {
+    'views':237,
+    'likes':234
+}
 init(autoreset=True)
 
 def clear():
@@ -47,6 +62,7 @@ def load_config():
                 data = json.load(f)
                 VIDEO_URL = data.get('video_url', VIDEO_URL)
                 AMOUNT_OF_BOOSTS = data.get('amount_of_boosts', AMOUNT_OF_BOOSTS)
+                TYPE = AMOUNT_OF_BOOSTS = data.get('type', TYPE)
         except Exception as e:
             print(f"{Fore.RED}Error loading config: {e}{Style.RESET_ALL}")
     else:
@@ -57,7 +73,8 @@ def save_config():
         with open(CONFIG_FILE, 'w') as f:
             json.dump({
                 'video_url': VIDEO_URL,
-                'amount_of_boosts': AMOUNT_OF_BOOSTS
+                'amount_of_boosts': AMOUNT_OF_BOOSTS,
+                'type' : TYPE
             }, f, indent=4)
     except Exception as e:
         print(f"{Fore.RED}Error saving config: {e}{Style.RESET_ALL}")
@@ -115,28 +132,32 @@ def is_valid_reel_url(url):
     return re.match(pattern, url) is not None
 
 def main():
-    global VIDEO_URL, AMOUNT_OF_BOOSTS
+    global VIDEO_URL, AMOUNT_OF_BOOSTS,TYPE
     clear()
     show_credits()
     is_first_run()
     load_config()
     while True:
         os.system("cls")
+        print(f"{Fore.CYAN}Type Selected: {TYPE.upper()}")
         print(f"{Fore.CYAN}{'-'*35}")
         print(f"{Fore.MAGENTA}{Style.BRIGHT}VIDEO FOR BOOST [{Fore.YELLOW}{VIDEO_URL}{Fore.MAGENTA}]")
-        print(f"{Fore.MAGENTA}{Style.BRIGHT}VIEWS TO BE ADDED [{Fore.YELLOW}{AMOUNT_OF_BOOSTS*500} VIEWS ({AMOUNT_OF_BOOSTS} Boosts){Fore.MAGENTA}] {color_boost_amount(AMOUNT_OF_BOOSTS)}(Time Est. {convert_hours(round((AMOUNT_OF_BOOSTS*5)/60, 2))} Hours)")
+        print(f"{Fore.MAGENTA}{Style.BRIGHT}{TYPE.upper()} TO BE ADDED [{Fore.YELLOW}{AMOUNT_OF_BOOSTS*quantity_types[TYPE]} {TYPE.upper()} ({AMOUNT_OF_BOOSTS} Boosts){Fore.MAGENTA}] {color_boost_amount(AMOUNT_OF_BOOSTS)}(Time Est. {convert_hours(round((AMOUNT_OF_BOOSTS*delay_types[TYPE])/60, 2))} Hours)")
         print(f"{Fore.CYAN}{'-'*35}{Style.RESET_ALL}")
-        print(f"{Fore.GREEN}1. Start Boost")
-        print(f"{Fore.BLUE}2. Change Video URL")
-        print(f"{Fore.BLUE}3. Change Boost Amount")
-        print(f"{Fore.RED}4. Exit{Style.RESET_ALL}")
+        print(f"{Fore.GREEN}[1] {Style.BRIGHT}START BOOST")
+        print(f"{Fore.BLUE}[2] Change Video URL")
+        print(f"{Fore.BLUE}[3] Change Boost Amount")
+        print(f"{Fore.BLACK}-"*30)
+        print(f"{Fore.BLUE}[4] {Style.BRIGHT}{Fore.YELLOW}[NEW] Change TYPE (Likes / Views)")
+        print(f"{Fore.BLACK}-"*30)
+        print(f"{Fore.RED}[5] Exit{Style.RESET_ALL}")
 
         choice = input(f"\n{Fore.WHITE}-> {Style.RESET_ALL}")
 
         if choice == "1":
             used = 0
             from zefame import Zefame
-            zefame = Zefame(VIDEO_URL)
+            zefame = Zefame(VIDEO_URL,service_id[TYPE])
             while used < AMOUNT_OF_BOOSTS:
                 response = zefame.send_boost()
                 if type(response) == bool:
@@ -161,6 +182,12 @@ def main():
             except ValueError:
                 print(f"{Fore.RED}Invalid number!{Style.RESET_ALL}")
         elif choice == "4":
+            if TYPE == 'views':
+                TYPE = 'likes'
+            else:
+                TYPE = 'views'
+            save_config()
+        elif choice == "5":
             print("Exiting...")
             break
         else:

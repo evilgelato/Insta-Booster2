@@ -2,12 +2,12 @@ import requests
 import uuid
 
 class Zefame:
-    def __init__(self, url_video):
+    def __init__(self, url_video,service_id):
         self.url_video = url_video
         self.url = "https://zefame-free.com/api_free.php?action=order"
         self.uuid = str(uuid.uuid4())
         self.data = {
-            "service": 237,
+            "service": service_id,
             "link": url_video,
             "uuid": self.uuid,
             "postId": url_video.split("/")[4]

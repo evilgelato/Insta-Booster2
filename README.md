@@ -7,6 +7,11 @@ Insta-Booster is a tool designed to help you increase the number of views on you
 
 ---
 
+## [NEW] V0.0.2
+- Possible to boost Reel or Post Likes!!
+
+---
+
 ## ✨ Features
 - Boost views on any Instagram Reel
 - Customizable number of boosts per session
